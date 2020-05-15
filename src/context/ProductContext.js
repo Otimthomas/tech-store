@@ -4,7 +4,7 @@ const ProductContext = React.createContext();
 
 const ProductProvider = ({children}) => {
   const [sidebar, setSidebar] = React.useState(false);
-  const [sidecart, setSidecart] = React.useState(false);
+  const [sidecart, setSidecart] = React.useState(true);
   const [cartItems, setCartItems] = React.useState(0)
 
   // handle sidebar
