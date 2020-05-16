@@ -6,7 +6,10 @@ export default function Contact() {
     <section className='py-5'>
       <div className='col-10 mx-auto col-md-6 my-3'>
         <Title title='contact us' />
-        <form className='mt-5'>
+        <form
+		  action='https://formspree.io/totim1992@gmail.com'
+		  method="POST"
+          className='mt-5'>
           {/* name */}
           <div className='form-group'>
             <input
@@ -41,6 +44,14 @@ export default function Contact() {
               name='message'
               rows='10'
               className='form-control'></textarea>
+          </div>
+          {/* submit */}
+          <div className='form-group'>
+            <input
+              type='submit'
+              value='send'
+              className='form-control bg-primary text-white'
+            />
           </div>
         </form>
       </div>
