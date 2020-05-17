@@ -7,13 +7,11 @@ import {BrowserRouter as Router} from "react-router-dom";
 import {ProductProvider} from "./context/ProductContext";
 
 ReactDOM.render(
-  <ProductProvider>
-    <Router>
-      <React.StrictMode>
-        <App />
-      </React.StrictMode>
-    </Router>
-  </ProductProvider>,
+  <Router>
+    <ProductProvider>
+      <App />
+    </ProductProvider>
+  </Router>,
   document.getElementById("root")
 );
 

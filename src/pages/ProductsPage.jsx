@@ -1,9 +1,11 @@
-import React from 'react'
+import React from "react";
+import {ProductContext} from "../context/ProductContext";
 
 export default function ProductsPage() {
-	return (
-		<>
-			<h1>Hello from Products page</h1>	
-		</>
-	)
+  console.log(React.useContext(ProductContext));
+  return (
+    <>
+      <h1>Hello from Products page</h1>
+    </>
+  );
 }
