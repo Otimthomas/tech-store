@@ -31,19 +31,62 @@ const ProductProvider = ({children}) => {
     setFeaturedProducts(featured);
     setFilteredProducts(newProducts);
 
+    // set cart items
+    let tempCartItems = [...cart].reduce((total, item) => {
+      return (total += item.count);
+    }, 0);
+    setCartItems(tempCartItems);
+
+    // set subTotal and tax
+    let tempSubTotal = [...cart].reduce((total, item) => {
+      return (total += item.total);
+    }, 0);
+
+    tempSubTotal = parseFloat(tempSubTotal.toFixed(2));
+    let tax = tempSubTotal * 0.2;
+    tax = parseFloat(tax.toFixed(2));
+    let total = tempSubTotal + tax;
+    total = parseFloat(total.toFixed(2));
+
+    setCartSubTotal(tempSubTotal);
+    setCartTax(tax);
+    setCartTotal(total);
+
+
     // setStoreProducts(flatteredProducts(products));
     // console.log(flatteredProducts(products));
-  }, []);
+  }, [cart]);
 
   // setSingleProduct
-  const setProduct = id => {
+  const setProduct = (id) => {
     console.log(`set single product ${id}`);
-  }
+  };
 
-  // add to cart 
+  // add to cart
   const addToCart = (id) => {
-    console.log(`item with id ${id} added to cart`)
-  }
+    let tempCart = [...cart];
+    let tempProducts = [...storeProducts];
+    let tempItem = tempCart.find((item) => item.id === id);
+
+    if (!tempItem) {
+      tempItem = tempProducts.find((item) => item.id === id);
+      let total = tempItem.price;
+      let cartItem = {...tempItem, count: 1, total};
+      tempCart = [...tempCart, cartItem];
+    } else {
+      tempItem.count++;
+      tempItem.total = tempItem.price * tempItem.count;
+      tempItem.total = parseFloat(tempItem.total.toFixed(2));
+    }
+    localStorage.setItem("cart", JSON.stringify(tempCart));
+    setCart(tempCart);
+    addTotals();
+    // syncStorage();
+    openCart();
+  };
+
+  // add Totals
+  const addTotals = () => {};
 
   // handle sidebar
   const handleSidebar = () => {
@@ -80,7 +123,7 @@ const ProductProvider = ({children}) => {
         storeProducts,
         featuredProducts,
         filteredProducts,
-        cart
+        cart,
       }}>
       {children}
     </ProductContext.Provider>
