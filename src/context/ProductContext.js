@@ -109,6 +109,26 @@ const ProductProvider = ({children}) => {
     setSidecart(true);
   };
 
+  // increase cart item
+  const increment = (id) => {
+    console.log(id);
+  }
+
+  // decrease cart item 
+  const decrement = (id) => {
+    console.log(id);
+  }
+
+  // delete cart item
+  const removeItem = (id) => {
+    console.log(id);
+  }
+
+  // clear cart 
+  const clearCart = () => {
+    console.log('cart cleared')
+  }
+
   return (
     <ProductContext.Provider
       value={{
@@ -125,7 +145,13 @@ const ProductProvider = ({children}) => {
         featuredProducts,
         filteredProducts,
         cart,
-        cartTotal
+        cartSubTotal,
+        cartTax,
+        cartTotal,
+        increment,
+        decrement,
+        clearCart,
+        removeItem
       }}>
       {children}
     </ProductContext.Provider>
