@@ -1,12 +1,29 @@
 import React from 'react';
 import styled from 'styled-components';
+import {Link} from 'react-router-dom';
 import {ProductContext} from '../context/ProductContext';
 
 export default function SideCart() {
-	const {sidecart, handleSidecart} = React.useContext(ProductContext);
+	const {sidecart, handleSidecart, cart, cartTotal} = React.useContext(ProductContext);
 	return (
 		<CartWrapper show={sidecart} onClick={handleSidecart}>
-			<p>cart items</p>
+			<ul>
+				{
+					cart.map(item => {
+						return <li key={item.id} className="cart-item mb-4">
+							<img width="35" src={item.image} alt={item.title} />
+							<div className="mt-3">
+								<h6 className="text-uppercase">{item.title}</h6>
+								<h6 className="text-title text-capitalize">amount: {item.count}</h6>
+							</div>
+						</li>
+					})
+				}
+			</ul>
+			<h4 className="text-capitalize text-main">cart total: ${cartTotal}</h4>
+			<div className="text-center my-5">
+				<Link to="/cart" className="main-link">cart page</Link>
+			</div>
 		</CartWrapper>
 	)
 }
@@ -25,5 +42,13 @@ const CartWrapper = styled.div`
 
 	@media (min-width: 576px) {
 		width: 20rem;
+	}
+	overflow: scroll;
+	padding: 2rem;
+	ul {
+		padding: 0 !important;
+	}
+	.cart-item {
+		list-style-type: none;
 	}
 `

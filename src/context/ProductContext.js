@@ -35,6 +35,7 @@ const ProductProvider = ({children}) => {
     let tempCartItems = [...cart].reduce((total, item) => {
       return (total += item.count);
     }, 0);
+    console.log(tempCartItems)
     setCartItems(tempCartItems);
 
     // set subTotal and tax
@@ -124,6 +125,7 @@ const ProductProvider = ({children}) => {
         featuredProducts,
         filteredProducts,
         cart,
+        cartTotal
       }}>
       {children}
     </ProductContext.Provider>
