@@ -35,7 +35,7 @@ const ProductProvider = ({children}) => {
     let tempCartItems = [...cart].reduce((total, item) => {
       return (total += item.count);
     }, 0);
-    console.log(tempCartItems)
+    console.log(tempCartItems);
     setCartItems(tempCartItems);
 
     // set subTotal and tax
@@ -52,7 +52,6 @@ const ProductProvider = ({children}) => {
     setCartSubTotal(tempSubTotal);
     setCartTax(tax);
     setCartTotal(total);
-
 
     // setStoreProducts(flatteredProducts(products));
     // console.log(flatteredProducts(products));
@@ -79,11 +78,15 @@ const ProductProvider = ({children}) => {
       tempItem.total = tempItem.price * tempItem.count;
       tempItem.total = parseFloat(tempItem.total.toFixed(2));
     }
-    localStorage.setItem("cart", JSON.stringify(tempCart));
     setCart(tempCart);
     addTotals();
-    // syncStorage();
+    syncStorage(tempCart);
     openCart();
+  };
+
+  // sync storage
+  const syncStorage = (cart) => {
+    return localStorage.setItem("cart", JSON.stringify(cart));
   };
 
   // add Totals
@@ -111,23 +114,44 @@ const ProductProvider = ({children}) => {
 
   // increase cart item
   const increment = (id) => {
-    console.log(id);
-  }
+    const tempCart = [...cart];
+    const tempItem = tempCart.find((item) => item.id === id);
+    tempItem.count++;
+    tempItem.total = tempItem.count * tempItem.price;
+    tempItem.total = parseFloat(tempItem.total.toFixed(2));
+    setCart(tempCart);
+    syncStorage(tempCart);
+  };
 
-  // decrease cart item 
-  const decrement = (id) => {
-    console.log(id);
-  }
+  // decrease cart item
+  const decrement = (id, count) => {
+    if (count === 1) {
+     removeItem(id);
+     return;
+    }
+    const tempCart = [...cart];
+    const tempItem = tempCart.find((item) => item.id === id);
+    tempItem.count--;
+    tempItem.total = tempItem.count * tempItem.price;
+    tempItem.total = parseFloat(tempItem.total.toFixed(2));
+    setCart(tempCart);
+    syncStorage(tempCart);
+  };
 
   // delete cart item
   const removeItem = (id) => {
-    console.log(id);
-  }
+    const tempCart = [...cart].filter((item) => {
+      return item.id !== id;
+    });
+    setCart(tempCart);
+    syncStorage(tempCart);
+  };
 
-  // clear cart 
+  // clear cart
   const clearCart = () => {
-    console.log('cart cleared')
-  }
+    setCart([]);
+    syncStorage([]);
+  };
 
   return (
     <ProductContext.Provider
@@ -151,7 +175,7 @@ const ProductProvider = ({children}) => {
         increment,
         decrement,
         clearCart,
-        removeItem
+        removeItem,
       }}>
       {children}
     </ProductContext.Provider>
