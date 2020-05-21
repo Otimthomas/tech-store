@@ -83,10 +83,10 @@ const ProductProvider = ({children}) => {
 
     // setStoreProducts(flatteredProducts(products));
     // console.log(flatteredProducts(products));
-  }, []);
+  }, [cart]);
 
   React.useEffect(() => {
-    console.log("it worked i guess");
+    // console.log("it worked i guess");
     sortData();
     
   }, [storeProducts, inputs]);
