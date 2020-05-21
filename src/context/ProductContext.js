@@ -21,8 +21,22 @@ const ProductProvider = ({children}) => {
   const [storeProducts, setStoreProducts] = React.useState([]);
   const [filteredProducts, setFilteredProducts] = React.useState([]);
   const [featuredProducts, setFeaturedProducts] = React.useState([]);
-  const [singleProduct, setSingleProduct] = React.useState({});
+  // const [singleProduct, setSingleProduct] = React.useState({});
   const [loading, setLoading] = React.useState(false);
+  const [inputs, setInputs] = React.useState({
+    search: "",
+    price: 0,
+    min: 0,
+    max: 0,
+    company: "all",
+    shipping: false,
+  });
+  // const [search, setSearch] = React.useState("");
+  // const [price, setPrice] = React.useState(0);
+  // const [min, setMin] = React.useState(0);
+  // const [max, setMax] = React.useState(0);
+  // const [company, setCompany] = React.useState("all");
+  // const [shipping, setShipping] = React.useState(false);
 
   React.useEffect(() => {
     let newProducts = flatteredProducts(products);
@@ -31,11 +45,25 @@ const ProductProvider = ({children}) => {
     setFeaturedProducts(featured);
     setFilteredProducts(newProducts);
 
+    // get max price
+    let maxPrice = Math.max(
+      ...newProducts.map((item) => {
+        return item.price;
+      })
+    );
+    // console.log(newProducts);
+    setInputs({...inputs, price: maxPrice, max: maxPrice});
+    // setMax(maxPrice);
+    // setPrice(maxPrice);
+    // console.log(price)
+    // console.log(newProducts)
+    // console.log(`max price ${maxPrice}`)
+
     // set cart items
     let tempCartItems = [...cart].reduce((total, item) => {
       return (total += item.count);
     }, 0);
-    console.log(tempCartItems);
+    // console.log(tempCartItems);
     setCartItems(tempCartItems);
 
     // set subTotal and tax
@@ -55,7 +83,13 @@ const ProductProvider = ({children}) => {
 
     // setStoreProducts(flatteredProducts(products));
     // console.log(flatteredProducts(products));
-  }, [cart]);
+  }, []);
+
+  React.useEffect(() => {
+    console.log("it worked i guess");
+    sortData();
+    
+  }, [storeProducts, inputs]);
 
   // setSingleProduct
   const setProduct = (id) => {
@@ -126,8 +160,8 @@ const ProductProvider = ({children}) => {
   // decrease cart item
   const decrement = (id, count) => {
     if (count === 1) {
-     removeItem(id);
-     return;
+      removeItem(id);
+      return;
     }
     const tempCart = [...cart];
     const tempItem = tempCart.find((item) => item.id === id);
@@ -153,6 +187,49 @@ const ProductProvider = ({children}) => {
     syncStorage([]);
   };
 
+  // handle filtering
+  const handleChange = (event) => {
+    const name = event.target.name;
+    const value =
+      event.target.type === "checkbox"
+        ? event.target.checked
+        : event.target.value;
+
+    // console.log(`Name: ${name}, Value: ${value}`)
+    setInputs({...inputs, [name]: [value]});
+  };
+
+  const sortData = () => {
+    // console.log('sorting data...')
+    const {price, company, shipping, search} = inputs;
+    let tempProducts = [...storeProducts];
+
+    let tempPrice = parseInt(price);
+    tempProducts = tempProducts.filter(item => item.price <= tempPrice);
+
+    if (company !== "all") {
+      tempProducts = tempProducts.filter((item) => item.company === company[0]);
+    }
+
+    if (shipping) {
+      tempProducts = tempProducts.filter(item => item.freeShipping === true);
+    }
+
+    if(search.length > 0) {
+      tempProducts = tempProducts.filter(item => {
+        let tempSearch = search[0].toLowerCase();
+        let tempTitle = item.title.toLowerCase().slice(0, search.length);
+        if(tempSearch === tempTitle){
+          return item;
+        }
+      })
+    }
+    // console.log(tempProducts);
+
+    setFilteredProducts(tempProducts);
+    // console.log(filteredProducts)
+  };
+
   return (
     <ProductContext.Provider
       value={{
@@ -176,6 +253,14 @@ const ProductProvider = ({children}) => {
         decrement,
         clearCart,
         removeItem,
+        handleChange,
+        inputs,
+        // search,
+        // price,
+        // min,
+        // max,
+        // company,
+        // shipping,
       }}>
       {children}
     </ProductContext.Provider>
